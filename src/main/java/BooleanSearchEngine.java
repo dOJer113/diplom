@@ -8,13 +8,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BooleanSearchEngine implements SearchEngine {
-    private final Map<String, List<PageEntry>> database = new HashMap<>();
+    private final Map<String, List<PageEntry>> map = new HashMap<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         for (File pdf : pdfsDir.listFiles()) {
             var doc = new PdfDocument(new PdfReader(pdf));
             int pageCount = doc.getNumberOfPages();
-            for (int i = 1; i <= pageCount; i++) {
+            int i=1;
+            while (i <= pageCount) {
+                i++;
                 var page = doc.getPage(i);
                 var text = PdfTextExtractor.getTextFromPage(page);
                 var words = text.split("\\P{IsAlphabetic}+");
@@ -28,11 +30,11 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
                 for (String word : freqs.keySet()) {
                     PageEntry pageEntry = new PageEntry(pdf.getName(), i, freqs.get(word));
-                    if (database.containsKey(word)) {
-                        database.get(word).add(pageEntry);
+                    if (map.containsKey(word)) {
+                        map.get(word).add(pageEntry);
                     } else {
-                        database.put(word, new ArrayList<>());
-                        database.get(word).add(pageEntry);
+                        map.put(word, new ArrayList<>());
+                        map.get(word).add(pageEntry);
                     }
                 }
             }
@@ -41,7 +43,7 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public List<PageEntry> search(String word) {
-        List<PageEntry> result = database.get(word);
+        List<PageEntry> result = map.get(word);
 
         if (result != null) {
             return result.stream().sorted().collect(Collectors.toList());
