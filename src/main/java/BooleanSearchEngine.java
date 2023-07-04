@@ -14,14 +14,14 @@ public class BooleanSearchEngine implements SearchEngine {
         for (File pdf : pdfsDir.listFiles()) {
             var doc = new PdfDocument(new PdfReader(pdf));
             int pageCount = doc.getNumberOfPages();
-            int i=1;
-            while (i <= pageCount) {
+            int i = 0;
+            while (i < pageCount) {
                 i++;
                 var page = doc.getPage(i);
                 var text = PdfTextExtractor.getTextFromPage(page);
                 var words = text.split("\\P{IsAlphabetic}+");
-                Map<String, Integer> freqs = new HashMap<>(); // мапа, где ключом будет слово, а значением - частота
-                for (var word : words) { // перебираем слова
+                Map<String, Integer> freqs = new HashMap<>();
+                for (var word : words) {
                     if (word.isEmpty()) {
                         continue;
                     }
