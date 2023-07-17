@@ -32,6 +32,7 @@ public class BooleanSearchEngine implements SearchEngine {
                     PageEntry pageEntry = new PageEntry(pdf.getName(), i, freqs.get(word));
                     if (map.containsKey(word)) {
                         map.get(word).add(pageEntry);
+                        map.put(word,map.get(word).stream().sorted().collect(Collectors.toList()));
                     } else {
                         map.put(word, new ArrayList<>());
                         map.get(word).add(pageEntry);
@@ -43,10 +44,10 @@ public class BooleanSearchEngine implements SearchEngine {
 
     @Override
     public List<PageEntry> search(String word) {
-        List<PageEntry> result = map.get(word);
+        List<PageEntry> result = map.get(word.toLowerCase());
 
         if (result != null) {
-            return result.stream().sorted().collect(Collectors.toList());
+            return result;
         }
 
         return Collections.emptyList();
